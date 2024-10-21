@@ -110,7 +110,8 @@ defmodule Server do
         IO.puts("(serv2) Updating serv2...")
         serv2(next)  # Call the updated version of serv2
       #
-      # UNSURE IF THIS BELOW WORKS:
+      # UNSURE IF THIS BELOW WORKS
+      # check the coding note on elixir attached on assn 6
       #
       # [head | tail] when is_integer(head) ->
       #   sum = Enum.sum([head | tail])  # Sum function sums all the items in a list
