@@ -1,1 +1,1 @@
-# comp590_a06
+# Team: AJ Valentino and Lauren Ferlito
