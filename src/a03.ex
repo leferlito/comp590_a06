@@ -38,3 +38,16 @@ defmodule P1 do
   defp factorial(0), do: 1  # Base case
   defp factorial(n) when n > 0, do: n * factorial(n - 1)
 end
+
+defmodule P2 do
+  def loop do
+    P1.start()
+    input = IO.gets("Press enter to continue or '0' to quit: ")
+    case String.trim(input) do
+    "0" ->
+      IO.puts("Exiting program.")
+    _ ->
+      loop()
+    end
+  end
+end
