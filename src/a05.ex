@@ -47,8 +47,10 @@ defmodule Server do
   def parse_message("update3"), do: :update3
 
   def parse_message(input) do
+    # Handle input as a list or a valid tuple
     case Code.eval_string(input) do
       {term, _} when is_tuple(term) -> {:ok, term}  # Successfully parsed as a tuple
+      {term, _} when is_list(term) -> {:ok, term}  # Successfully parsed as a list
       _ -> {:error, "Invalid input"}
     end
   end
@@ -78,7 +80,7 @@ defmodule Server do
         IO.puts("(serv1) Multiplying #{a} * #{b} = #{result}")
         serv1(next)
 
-      {:divide, a, b} when is_number(a) and is_number(b) ->
+      {:div, a, b} when is_number(a) and is_number(b) ->
         result = a / b
         IO.puts("(serv1) Dividing #{a} / #{b} = #{result}")
         serv1(next)
@@ -109,19 +111,16 @@ defmodule Server do
       :update ->
         IO.puts("(serv2) Updating serv2...")
         serv2(next)  # Call the updated version of serv2
-      #
-      # UNSURE IF THIS BELOW WORKS
-      # check the coding note on elixir attached on assn 6
-      #
-      # [head | tail] when is_integer(head) ->
-      #   sum = Enum.sum([head | tail])  # Sum function sums all the items in a list
-      #   IO.puts("(serv2) Sum of list with integer head: #{[head | tail]} = #{sum}")
-      #   serv2(next)
 
-      # [head | tail] when is_float(head) ->
-      #   product = Enum.reduce([head | tail], 1.0, &(&1 * &2))  # Foldl calls fun on successive elements in the list
-      #   IO.puts("(serv2) Product of list with float head: #{[head | tail]} = #{product}")
-      #   serv2(next)
+      [head | tail] when is_integer(head) ->
+        sum = Enum.sum(Enum.filter([head | tail], &is_number/1))
+        IO.puts("(serv2) Sum of list with integer head: #{inspect([head | tail])} = #{sum}")
+        serv2(next)
+
+      [head | tail] when is_float(head) ->
+        product = Enum.reduce(Enum.filter([head | tail], &is_number/1), 1.0, &(&1 * &2))
+        IO.puts("(serv2) Product of list with float head: #{inspect([head | tail])} = #{product}")
+        serv2(next)
 
       msg ->
         IO.puts("(serv2) Forwarding message: #{inspect(msg)}")
@@ -140,7 +139,7 @@ defmodule Server do
         IO.puts("(serv3) Updating serv3...")
         serv3(unhandled_count)  # Call the updated version of serv3
 
-      {_error, reason} ->
+      {:error, reason} ->
         IO.puts("(serv3) Error: #{reason}")
         serv3(unhandled_count)
 
