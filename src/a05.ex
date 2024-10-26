@@ -1,3 +1,4 @@
+# Team: AJ Valentino and Lauren Ferlito
 defmodule Server do
   def start() do
     # Create servers in reverse order to pass them as arguments
